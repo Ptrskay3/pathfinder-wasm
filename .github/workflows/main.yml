@@ -37,15 +37,17 @@ jobs:
           node-version: '12'
 
       # Install npm packages
-      - name: link rust
-        run: cd pkg && npm link && cd ..
-      
-      - name: build deps
-      - run: cd pathfinder && npm link pathfinder-wasm && npm install 
+      - name: link rust and deps
+        run:  | 
+        cd pkg && npm link && cd ..
+        cd pathfinder && npm link pathfinder-wasm && npm install 
+        npm run deploy
+      # - name: build deps
+      # - run: 
 
-      # Build react app
-      - name: deploy
-        run: npm run deploy
+      # # Build react app
+      # - name: deploy
+      #   run: 
 
       # Runs a single command using the runners shell
       # - name: Run a one-line script
