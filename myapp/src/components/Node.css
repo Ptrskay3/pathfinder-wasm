@@ -1,0 +1,92 @@
+.node {
+  width: 30px;
+  height: 30px;
+  outline: 1px solid grey;
+  display: inline-block;
+}
+
+.is-finish {
+  /* width: 25px;
+    height: 25px;
+    outline: 3px solid red;
+    display: inline-block; */
+  /* background-color: white; */
+  outline: 3px violet;
+  outline-style: solid;
+}
+
+.is-start {
+  /* width: 25px;
+  height: 25px;
+  outline: 3px solid blue;
+  display: inline-block; */
+  /* background-color: black; */
+  outline: 3px yellow;
+  outline-style: solid;
+}
+
+.is-visited {
+  background-color: red;
+}
+
+.is-really-wall {
+  background-color: black;
+  animation-name: wallanim;
+  animation-duration: 0.1s;
+  animation-timing-function: ease-in-out;
+  animation-delay: 0;
+  animation-direction: alternate;
+  animation-iteration-count: 1;
+  animation-fill-mode: forwards;
+  animation-play-state: running;
+}
+
+.is-visited {
+  animation-name: shortestPath;
+  animation-duration: 1.5s;
+  animation-timing-function: ease-in-out;
+  animation-delay: 0;
+  animation-direction: alternate;
+  animation-iteration-count: 1;
+  animation-fill-mode: forwards;
+  animation-play-state: running;
+}
+
+@keyframes shortestPath {
+  0% {
+    transform: scale(0.6);
+    background-color: rgb(255, 254, 106);
+  }
+
+  50% {
+    transform: scale(1.2);
+    background-color: rgb(255, 254, 106);
+  }
+
+  100% {
+    transform: scale(1);
+    background-color: rgb(255, 254, 106);
+  }
+}
+
+@keyframes wallanim {
+  0% {
+    transform: scale(0.3);
+    background-color: rgba(0, 0, 66, 0.75);
+    border-radius: 100%;
+  }
+
+  50% {
+    background-color: rgba(17, 104, 217, 0.75);
+  }
+
+  75% {
+    transform: scale(1.2);
+    background-color: rgba(0, 217, 159, 0.75);
+  }
+
+  100% {
+    transform: scale(1);
+    background-color: rgba(0, 190, 218, 0.75);
+  }
+}
