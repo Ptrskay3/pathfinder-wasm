@@ -6,7 +6,7 @@ target/
 /node_modules
 /.pnp
 .pnp.js
-.eslintcache
+pathfinder/.eslintcache
 
 # testing
 /coverage

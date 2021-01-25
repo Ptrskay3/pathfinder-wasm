@@ -59,11 +59,14 @@ const Loaded = ({ wasm }) => {
   for (let j = 0; j < width * height; j++) {
     blocks.push(0);
   }
-  const [walls, setWalls] = useState(blocks);
+  // eslint-disable-next-line no-unused-vars
+  const [walls, _setWalls] = useState(blocks);
   const v = wasm.run_astar_cityblock(width, height, walls, 0, 0, GOALX, GOALY);
   const board = build_universe(width, height, GOALX, GOALY, blocks);
-  const [universe, setUniverse] = useState(board);
-  const [path, setPath] = useState(v);
+  // eslint-disable-next-line no-unused-vars
+  const [universe, _setUniverse] = useState(board);
+  // eslint-disable-next-line no-unused-vars
+  const [_path, _setPath] = useState(v);
 
   const fetchWalls = () => {
     const block = new Array(width * height);
