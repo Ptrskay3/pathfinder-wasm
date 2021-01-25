@@ -105,8 +105,7 @@ impl CityBlock {
         .filter(|p| !grid.is_wall_there(p.0, p.1) && p.1 >= 0 && p.0 >= 0 && p.0 <= grid.width() && p.1 <= grid.height())
         .map(|p| (p, 1))
         .collect();
-        // println!("at {:?}", self);
-        // println!("reachable {:?}", v);
+        // println!("", v);
         v
     }
 }
