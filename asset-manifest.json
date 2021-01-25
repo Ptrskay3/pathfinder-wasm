@@ -1,0 +1,25 @@
+{
+  "files": {
+    "main.css": "/pathfinder-wasm/static/css/main.354c20be.chunk.css",
+    "main.js": "/pathfinder-wasm/static/js/main.31736bcc.chunk.js",
+    "main.js.map": "/pathfinder-wasm/static/js/main.31736bcc.chunk.js.map",
+    "runtime-main.js": "/pathfinder-wasm/static/js/runtime-main.b567bd8f.js",
+    "runtime-main.js.map": "/pathfinder-wasm/static/js/runtime-main.b567bd8f.js.map",
+    "static/js/2.63923294.chunk.js": "/pathfinder-wasm/static/js/2.63923294.chunk.js",
+    "static/js/2.63923294.chunk.js.map": "/pathfinder-wasm/static/js/2.63923294.chunk.js.map",
+    "static/js/3.67c1d343.chunk.js": "/pathfinder-wasm/static/js/3.67c1d343.chunk.js",
+    "e192a99bc3c4b40ee467.module.wasm": "/pathfinder-wasm/e192a99bc3c4b40ee467.module.wasm",
+    "static/js/3.67c1d343.chunk.js.map": "/pathfinder-wasm/static/js/3.67c1d343.chunk.js.map",
+    "static/js/4.0dfa04db.chunk.js": "/pathfinder-wasm/static/js/4.0dfa04db.chunk.js",
+    "static/js/4.0dfa04db.chunk.js.map": "/pathfinder-wasm/static/js/4.0dfa04db.chunk.js.map",
+    "index.html": "/pathfinder-wasm/index.html",
+    "static/css/main.354c20be.chunk.css.map": "/pathfinder-wasm/static/css/main.354c20be.chunk.css.map",
+    "static/js/2.63923294.chunk.js.LICENSE.txt": "/pathfinder-wasm/static/js/2.63923294.chunk.js.LICENSE.txt"
+  },
+  "entrypoints": [
+    "static/js/runtime-main.b567bd8f.js",
+    "static/js/2.63923294.chunk.js",
+    "static/css/main.354c20be.chunk.css",
+    "static/js/main.31736bcc.chunk.js"
+  ]
+}
