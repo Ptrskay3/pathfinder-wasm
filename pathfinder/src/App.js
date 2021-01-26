@@ -27,29 +27,24 @@ const Loaded = ({ wasm }) => {
       const currentRow = [];
       for (let y = 0; y < width; y++) {
         if (y === 0 && x === 0) {
-          const node = (
-            <Node
-              x={x}
-              y={y}
-              isStart={true}
-              isFinish={false}
-              isWall={walls[width * x + y]}
-              isVisited={false}
-              
-            />
-          );
+          const node = {
+            x: x,
+            y: y,
+            isStart: true,
+            isFinish: false,
+            isWall: walls[width * x + y],
+            isVisited: false,
+          };
           currentRow.push(node);
         } else {
-          const node = (
-            <Node
-              x={x}
-              y={y}
-              isStart={false}
-              isFinish={false}
-              isWall={walls[width * x + y]}
-              isVisited={false}
-            />
-          );
+          const node = {
+            x: x,
+            y: y,
+            isStart: false,
+            isFinish: false,
+            isWall: walls[width * x + y],
+            isVisited: false,
+          };
           currentRow.push(node);
         }
       }
@@ -60,7 +55,15 @@ const Loaded = ({ wasm }) => {
 
   const forceUpdate = useForceUpdate();
 
-  const board = build_universe(width, height, walls);
+  const eraseGoalsCallback = () => {
+    try {
+      const finish = document.getElementsByClassName(`node is-finish`);
+      for (let i = 0; i < finish.length; i++) {
+        finish[i].className = "node";
+      }
+    } catch {}
+  };
+  const board = build_universe(width, height, eraseGoalsCallback);
   // const v = wasm.run_astar_cityblock(width, height, walls, 0, 0, GOALX, GOALY);
   // eslint-disable-next-line no-unused-vars
   const [universe, _setUniverse] = useState(board);
@@ -97,21 +100,44 @@ const Loaded = ({ wasm }) => {
     animateShortestPath(buildPath(z));
   };
 
-  const rebuild_universe = () => {
-    const bl = new Array(width * height);
-    bl.fill(1);
-    // console.log("bl is ", bl);
-    const u = build_universe(width, height, bl);
-    // _setWalls([...bl]);
-    _setUniverse([...u]);
-    // console.log(u[0][1]);
-    forceUpdate();
+  const clearWalls = () => {
+    const lastpath = document.getElementsByClassName(`node`);
+    // console.log("a hossza most", lastpath);
+    for (let j = 0; j < lastpath.length; j++) {
+      const node = lastpath[j];
+      if (node.classList.contains("is-really-wall")) {
+        node.className = "node";
+      }
+    }
+  };
+
+  const rebuild_universe = (withWalls = false) => {
+    // const block = new Array(width * height);
+    // block.fill(0);
+    // const u = build_universe(width, height, block);
+
+    const lastpath = document.getElementsByClassName(`node`);
+    // console.log("a hossza most", lastpath);
+    for (let j = 0; j < lastpath.length; j++) {
+      const cond = withWalls
+        ? false
+        : lastpath[j].classList.contains("is-really-wall");
+      if (cond) {
+        continue;
+      } else if (lastpath[j].classList.contains("is-start")) {
+        lastpath[j].className = "node is-start";
+      } else if (lastpath[j].classList.contains("is-finish")) {
+        lastpath[j].className = "node is-finish";
+      } else {
+        lastpath[j].className = "node";
+      }
+    }
   };
 
   const fetchWallsKing = () => {
     const block = new Array(width * height);
     block.fill(0);
-    const a = document.getElementsByClassName(`node is-really-wall`);
+    const a = document.getElementsByClassName("node is-really-wall");
     for (let k = 0; k < a.length; k++) {
       const el = a[k].id.split("-");
       // console.log(`ez most wall lett x: ${el[1]} y: ${el[2]}`);
@@ -138,16 +164,16 @@ const Loaded = ({ wasm }) => {
     }
   };
 
-  const clearInitialGoal = () => {
-    try {
-      const finish = document.getElementsByClassName(`node is-finish`);
-      for (let i = 0; i < finish.length - 1; i++) {
-        finish[i].className = "node";
-      }
-    } catch {
-      console.log("skipped");
-    }
-  };
+  // const clearInitialGoal = () => {
+  //   try {
+  //     const finish = document.getElementsByClassName(`node is-finish`);
+  //     for (let i = 0; i < finish.length - 1; i++) {
+  //       finish[i].className = "node";
+  //     }
+  //   } catch {
+  //     console.log("skipped");
+  //   }
+  // };
 
   const buildPath = (p) => {
     const x_path = [];
@@ -175,19 +201,27 @@ const Loaded = ({ wasm }) => {
     }
 
     // cleanup last
-    const lastpath = document.getElementsByClassName(`node is-visited`);
-    // console.log("a hossza most", lastpath);
-    for (let j = 0; j < lastpath.length; j++) {
-      // console.log(lastpath[j]);
-      lastpath[j].className = "node";
-    }
+    // const lastpath = document.getElementsByClassName("node is-visited");
+    // console.log("ezek", lastpath);
+    // for (let j = 0; j < lastpath.length; j++) {
+    //   console.log("ezt megváltoztotta", lastpath[j]);
+    //   lastpath[j].className = "node";
+    // }
+    rebuild_universe();
 
     for (let i = 0; i < existing.length; i++) {
       setTimeout(() => {
         const node = existing[i];
         try {
-          document.getElementById(`node-${node[0]}-${node[1]}`).className =
-            "node is-visited";
+          const element = document.getElementById(`node-${node[0]}-${node[1]}`);
+          if (element.classList.contains("is-start")) {
+            element.className = "node is-start is-visited";
+          } else if (element.classList.contains("is-finish")) {
+            element.className = "node is-visited is-finish";
+          } else {
+            document.getElementById(`node-${node[0]}-${node[1]}`).className =
+              "node is-visited";
+          }
         } catch (e) {
           console.log(e);
         }
@@ -201,13 +235,31 @@ const Loaded = ({ wasm }) => {
       <Menubar
         findPathKing={fetchWallsKing}
         findPath={fetchWallsCity}
+        clearUni={() => rebuild_universe(true)}
+        clearWalls={() => clearWalls()}
         isPathThere={isPathThere}
       ></Menubar>
-      <div id="cls" className="grid" align="center" onClick={clearInitialGoal}>
+      <div id="cls" className="grid" align="center">
         {universe.map((row, rowIdx) => {
-          return <div>{row.map((node, nodeIdx) => node)}</div>;
+          return (
+            <div>
+              {row.map((node, nodeIdx) => {
+                const { x, y, isFinish, isStart, isWall, isVisited } = node;
+                return (
+                  <Node
+                    x={x}
+                    y={y}
+                    isStart={isStart}
+                    isFinish={isFinish}
+                    isVisited={isVisited}
+                    isWall={isWall}
+                    callback={eraseGoalsCallback}
+                  />
+                );
+              })}
+            </div>
+          );
         })}
-        <button onClick={rebuild_universe}>asdadsadada</button>
       </div>
     </div>
   );

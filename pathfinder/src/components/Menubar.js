@@ -2,7 +2,13 @@ import React, { useState, useEffect } from "react";
 import "./Menubar.css";
 import { CSSTransition } from "react-transition-group";
 
-export default function Menubar({ findPath, findPathKing, isPathThere }) {
+export default function Menubar({
+  findPath,
+  findPathKing,
+  isPathThere,
+  clearUni,
+  clearWalls,
+}) {
   const [isNavVisible, setNavVisibility] = useState(false);
   const [isSmallScreen, setIsSmallScreen] = useState(false);
   const [isPath, setIsPath] = useState(isPathThere);
@@ -79,6 +85,12 @@ export default function Menubar({ findPath, findPathKing, isPathThere }) {
           </button>
           <button className="toggle" id="diag" onClick={toggleKing}>
             {king ? "Diagonal allowed" : "Diagonal disabled"}
+          </button>
+          <button className="btn-active" id="clearer" onClick={clearUni}>
+            Clear
+          </button>
+          <button className="btn-active" id="clearer2" onClick={clearWalls}>
+            Clear Walls
           </button>
         </nav>
       </CSSTransition>

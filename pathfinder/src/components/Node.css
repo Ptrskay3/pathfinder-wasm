@@ -12,13 +12,13 @@
   position: relative;
 }
 
-.is-finish {
+.node.is-finish {
   /* width: 25px;
     height: 25px;
     outline: 3px solid red;
     display: inline-block; */
   /* background-color: white; */
-  outline: 3px violet;
+  outline: 3px rgb(46, 67, 255);
   outline-style: solid;
 }
 
@@ -26,15 +26,15 @@
   /* width: 25px;
   height: 25px;
   outline: 3px solid blue;
-  display: inline-block; */
-  /* background-color: black; */
-  outline: 3px yellow;
+  display: inline-block;
+  background-color: black; */
+  outline: 3px rgb(255, 0, 136);
   outline-style: solid;
 }
 
-.is-visited {
+/* .is-visited {
   background-color: red;
-}
+} */
 
 .is-really-wall {
   background-color: black;

@@ -24,6 +24,7 @@ export default class Node extends React.Component {
       isVisited: this.props.isVisited,
       isWall: this.props.isWall,
       dragging: false,
+      callback: this.props.callback,
     };
     this.nodeClicked = this.nodeClicked.bind(this);
     this.onMouseDown = this.onMouseDown.bind(this);
@@ -76,6 +77,7 @@ export default class Node extends React.Component {
   // }
 
   onMouseDown(event) {
+    this.state.callback();
     this.setState({ isFinish: true, isWall: false, isVisited: false });
     // if (event.code === 87) {
 
