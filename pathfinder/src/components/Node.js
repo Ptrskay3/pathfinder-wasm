@@ -3,6 +3,16 @@ import "./Node.css";
 
 // const zip = (a, b) => a.map((k, i) => [k, b[i]]);
 
+const debounce = (func, wait = 500) => {
+  let timeout;
+  return function (...args) {
+    clearTimeout(timeout);
+    timeout = setTimeout(() => {
+      func.apply(this, args);
+    }, wait);
+  };
+};
+
 export default class Node extends React.Component {
   constructor(props) {
     super(props);
@@ -11,7 +21,7 @@ export default class Node extends React.Component {
       y: this.props.y,
       isStart: this.props.isStart,
       isFinish: this.props.isFinish,
-      isVisited: false,
+      isVisited: this.props.isVisited,
       isWall: this.props.isWall,
       dragging: false,
     };
@@ -66,7 +76,7 @@ export default class Node extends React.Component {
   // }
 
   onMouseDown(event) {
-    this.setState({ isFinish: true });
+    this.setState({ isFinish: true, isWall: false, isVisited: false });
     // if (event.code === 87) {
 
     // }
@@ -89,7 +99,11 @@ export default class Node extends React.Component {
 
   onKeyPressed(e) {
     // e.persist();
-    this.setState({ isWall: !this.state.isWall });
+    if (this.state.isStart) return;
+    this.setState({
+      isWall: !this.state.isWall,
+      isFinish: false,
+    });
     // console.log(this.state.isWall);
     // this.setState({})
     // this.setState({ isWall: !this.state.isWall });
@@ -114,7 +128,9 @@ export default class Node extends React.Component {
         onMouseEnter={this.onMouseEnter}
         // onMouseDown={this.onMouseDown}
         // onMouseUp={this.onMouseUp}
-        onKeyDown={this.onKeyPressed}
+        onKeyDown={() => {
+          debounce(this.onKeyPressed, 20)();
+        }}
         // onKeyUp={this.onKeyUp}
         // onDrag={this.onMouseDown}
         className={`node ${extraClassName}`}

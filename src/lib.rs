@@ -79,11 +79,11 @@ impl Grid {
     }
 
     pub fn width(&self) -> i32 {
-        (self.blocks.len() as f64).sqrt() as i32
+        25 // hardcoded because of the frontend..
     }
 
     pub fn height(&self) -> i32 {
-        (self.blocks.len() as f64).sqrt() as i32
+        25 // hardcoded because of the frontend..
     }
 }
 
@@ -95,18 +95,21 @@ impl CityBlock {
 
     fn successors(&self, grid: Grid) -> Vec<(CityBlock, u32)> {
         let &CityBlock(x, y) = self;
-        let v = vec![
+        vec![
             CityBlock(x + 1, y),
             CityBlock(x, y - 1),
             CityBlock(x, y + 1),
             CityBlock(x - 1, y),
         ]
         .into_iter()
-        .filter(|p| !grid.is_wall_there(p.0, p.1) && p.1 >= 0 && p.0 >= 0 && p.0 <= grid.width() && p.1 <= grid.height())
+        .filter(|p| 
+            !grid.is_wall_there(p.0, p.1) // don't walk on walls
+            && p.1 >= 0 && p.0 >= 0 // don't walk beyond lower bounds
+            && p.0 <= grid.width() && p.1 <= grid.height() // dont't walk beyond upper bounds
+        )
         .map(|p| (p, 1))
-        .collect();
+        .collect()
         // println!("", v);
-        v
     }
 }
 
@@ -130,6 +133,7 @@ pub fn run_astar_king(
         |p| *p == GOAL,
     );
 
+    // log!("result is {:?}", result);
     match result {
         Some(r) => {
             (r.0).iter()
@@ -182,7 +186,7 @@ pub fn run_astar_cityblock(
         |p| p.distance(&GOAL) / 3,
         |p| *p == GOAL,
     );
-
+    // log!("result is {:?}", result);
     match result {
         Some(r) => {
             (r.0).iter()

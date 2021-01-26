@@ -12,7 +12,7 @@ pathfinder/.eslintcache
 /coverage
 
 # production
-/build
+pathfinder/build
 
 # misc
 .DS_Store
