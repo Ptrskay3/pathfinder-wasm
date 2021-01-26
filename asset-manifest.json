@@ -1,25 +1,25 @@
 {
   "files": {
-    "main.css": "/pathfinder-wasm/static/css/main.354c20be.chunk.css",
-    "main.js": "/pathfinder-wasm/static/js/main.31736bcc.chunk.js",
-    "main.js.map": "/pathfinder-wasm/static/js/main.31736bcc.chunk.js.map",
-    "runtime-main.js": "/pathfinder-wasm/static/js/runtime-main.b567bd8f.js",
-    "runtime-main.js.map": "/pathfinder-wasm/static/js/runtime-main.b567bd8f.js.map",
-    "static/js/2.63923294.chunk.js": "/pathfinder-wasm/static/js/2.63923294.chunk.js",
-    "static/js/2.63923294.chunk.js.map": "/pathfinder-wasm/static/js/2.63923294.chunk.js.map",
-    "static/js/3.67c1d343.chunk.js": "/pathfinder-wasm/static/js/3.67c1d343.chunk.js",
-    "e192a99bc3c4b40ee467.module.wasm": "/pathfinder-wasm/e192a99bc3c4b40ee467.module.wasm",
-    "static/js/3.67c1d343.chunk.js.map": "/pathfinder-wasm/static/js/3.67c1d343.chunk.js.map",
-    "static/js/4.0dfa04db.chunk.js": "/pathfinder-wasm/static/js/4.0dfa04db.chunk.js",
-    "static/js/4.0dfa04db.chunk.js.map": "/pathfinder-wasm/static/js/4.0dfa04db.chunk.js.map",
+    "main.css": "/pathfinder-wasm/static/css/main.25d1245f.chunk.css",
+    "main.js": "/pathfinder-wasm/static/js/main.27b9816c.chunk.js",
+    "main.js.map": "/pathfinder-wasm/static/js/main.27b9816c.chunk.js.map",
+    "runtime-main.js": "/pathfinder-wasm/static/js/runtime-main.315450e0.js",
+    "runtime-main.js.map": "/pathfinder-wasm/static/js/runtime-main.315450e0.js.map",
+    "static/js/2.1cb0bae7.chunk.js": "/pathfinder-wasm/static/js/2.1cb0bae7.chunk.js",
+    "static/js/2.1cb0bae7.chunk.js.map": "/pathfinder-wasm/static/js/2.1cb0bae7.chunk.js.map",
+    "static/js/3.6edd07a7.chunk.js": "/pathfinder-wasm/static/js/3.6edd07a7.chunk.js",
+    "4db9d6fc8e727fd96fdb.module.wasm": "/pathfinder-wasm/4db9d6fc8e727fd96fdb.module.wasm",
+    "static/js/3.6edd07a7.chunk.js.map": "/pathfinder-wasm/static/js/3.6edd07a7.chunk.js.map",
+    "static/js/4.fb248451.chunk.js": "/pathfinder-wasm/static/js/4.fb248451.chunk.js",
+    "static/js/4.fb248451.chunk.js.map": "/pathfinder-wasm/static/js/4.fb248451.chunk.js.map",
     "index.html": "/pathfinder-wasm/index.html",
-    "static/css/main.354c20be.chunk.css.map": "/pathfinder-wasm/static/css/main.354c20be.chunk.css.map",
-    "static/js/2.63923294.chunk.js.LICENSE.txt": "/pathfinder-wasm/static/js/2.63923294.chunk.js.LICENSE.txt"
+    "static/css/main.25d1245f.chunk.css.map": "/pathfinder-wasm/static/css/main.25d1245f.chunk.css.map",
+    "static/js/2.1cb0bae7.chunk.js.LICENSE.txt": "/pathfinder-wasm/static/js/2.1cb0bae7.chunk.js.LICENSE.txt"
   },
   "entrypoints": [
-    "static/js/runtime-main.b567bd8f.js",
-    "static/js/2.63923294.chunk.js",
-    "static/css/main.354c20be.chunk.css",
-    "static/js/main.31736bcc.chunk.js"
+    "static/js/runtime-main.315450e0.js",
+    "static/js/2.1cb0bae7.chunk.js",
+    "static/css/main.25d1245f.chunk.css",
+    "static/js/main.27b9816c.chunk.js"
   ]
 }
