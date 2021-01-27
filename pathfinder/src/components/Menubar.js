@@ -87,7 +87,7 @@ export default function Menubar({
             {king ? "Diagonal allowed" : "Diagonal disabled"}
           </button>
           <button className="btn-active" id="clearer" onClick={clearUni}>
-            Clear
+            Clear All
           </button>
           <button className="btn-active" id="clearer2" onClick={clearWalls}>
             Clear Walls

@@ -1,37 +1,37 @@
-name: CI
+# name: CI
 
-# Controls when the action will run.
-on:
-  # Triggers the workflow on push or pull request events but only for the master branch
-  push:
-    branches: [master]
-  pull_request:
-    branches: [master]
+# # Controls when the action will run.
+# on:
+#   # Triggers the workflow on push or pull request events but only for the master branch
+#   push:
+#     branches: [master]
+#   pull_request:
+#     branches: [master]
 
-  # Allows you to run this workflow manually from the Actions tab
-  workflow_dispatch:
+#   # Allows you to run this workflow manually from the Actions tab
+#   workflow_dispatch:
 
-# A workflow run is made up of one or more jobs that can run sequentially or in parallel
-jobs:
-  # This workflow contains a single job called "build"
-  build:
-    # The type of runner that the job will run on
-    runs-on: ubuntu-latest
+# # A workflow run is made up of one or more jobs that can run sequentially or in parallel
+# jobs:
+#   # This workflow contains a single job called "build"
+#   build:
+#     # The type of runner that the job will run on
+#     runs-on: ubuntu-latest
 
-    # Steps represent a sequence of tasks that will be executed as part of the job
-    steps:
-      - uses: actions/checkout@v2
+#     # Steps represent a sequence of tasks that will be executed as part of the job
+#     steps:
+#       - uses: actions/checkout@v2
 
-      - name: Install wasm-pack
-        run: curl https://rustwasm.github.io/wasm-pack/installer/init.sh -sSf | sh
+#       - name: Install wasm-pack
+#         run: curl https://rustwasm.github.io/wasm-pack/installer/init.sh -sSf | sh
 
-      - run: wasm-pack build --release
+#       - run: wasm-pack build --release
 
-        # Install node version 12
-      - uses: actions/setup-node@v2-beta
-        with:
-          node-version: "12"
+#         # Install node version 12
+#       - uses: actions/setup-node@v2-beta
+#         with:
+#           node-version: "12"
 
-      # Install npm packages
-      - name: link rust and deps
-        run: cd pathfinder && npm install && npm run deploy
+#       # Install npm packages
+#       - name: link rust and deps
+#         run: cd pathfinder && npm install && npm run deploy

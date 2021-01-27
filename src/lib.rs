@@ -18,47 +18,6 @@ macro_rules! log {
     }
 }
 
-#[derive(Clone, Debug, Eq, Hash, Ord, PartialEq, PartialOrd)]
-struct King(i32, i32);
-
-#[wasm_bindgen]
-impl King {
-    fn distance(&self, other: &King) -> u32 {
-        (absdiff(self.0, other.0) + absdiff(self.1, other.1)) as u32
-    }
-
-    fn successors(&self, grid: Grid) -> Vec<(King, u32)> {
-        let &King(x, y) = self;
-        let v = vec![
-            King(x + 1, y + 1),
-            King(x + 1, y),
-            King(x + 1, y - 1),
-            King(x, y - 1),
-            King(x, y + 1),
-            King(x - 1, y),
-            King(x - 1, y + 1),
-            King(x - 1, y - 1),
-        ]
-        .into_iter()
-        .filter(|p| !grid.is_wall_there(p.0, p.1) && p.1 >= 0 && p.0 >= 0 && p.0 <= grid.width() && p.1 <= grid.height())
-        .map(|p| (p, 1))
-        .collect();
-        // println!("at {:?}", self);
-        // println!("reachable {:?}", v);
-        v
-    }
-}
-
-#[wasm_bindgen]
-#[derive(Clone, Debug, Eq, Hash, Ord, PartialEq, PartialOrd)]
-pub struct CityBlock(i32, i32);
-
-#[derive(Debug)]
-pub struct Grid {
-    blocks: Vec<CityBlock>,
-    is_wall: Vec<bool>,
-}
-
 impl Grid {
     pub fn new(width: i32, height: i32, is_wall: Vec<bool>) -> Self {
         let mut blocks = Vec::<CityBlock>::new();
@@ -79,12 +38,55 @@ impl Grid {
     }
 
     pub fn width(&self) -> i32 {
-        25 // hardcoded because of the frontend..
+        55 // hardcoded because of the frontend..
     }
 
     pub fn height(&self) -> i32 {
-        25 // hardcoded because of the frontend..
+        22 // hardcoded because of the frontend..
     }
+}
+
+#[derive(Clone, Debug, Eq, Hash, Ord, PartialEq, PartialOrd)]
+struct King(i32, i32);
+
+#[wasm_bindgen]
+impl King {
+    fn distance(&self, other: &King) -> u32 {
+        (absdiff(self.0, other.0) + absdiff(self.1, other.1)) as u32
+    }
+
+    fn successors(&self, grid: Grid) -> Vec<(King, u32)> {
+        let &King(x, y) = self;
+        vec![
+            King(x + 1, y + 1),
+            King(x + 1, y),
+            King(x + 1, y - 1),
+            King(x, y - 1),
+            King(x, y + 1),
+            King(x - 1, y),
+            King(x - 1, y + 1),
+            King(x - 1, y - 1),
+        ]
+        .into_iter()
+        .filter(|p| 
+            !grid.is_wall_there(p.0, p.1) // don't walk on walls
+            && p.1 >= 0 && p.0 >= 0  // don't walk beyond lower bounds
+            && p.0 < grid.width() && p.1 < grid.height() // don't walk beyond upper bounds
+        )
+        .map(|p| (p, 1))
+        .collect()
+
+    }
+}
+
+#[wasm_bindgen]
+#[derive(Clone, Debug, Eq, Hash, Ord, PartialEq, PartialOrd)]
+pub struct CityBlock(i32, i32);
+
+#[derive(Debug)]
+pub struct Grid {
+    blocks: Vec<CityBlock>,
+    is_wall: Vec<bool>,
 }
 
 #[wasm_bindgen]
@@ -105,7 +107,7 @@ impl CityBlock {
         .filter(|p| 
             !grid.is_wall_there(p.0, p.1) // don't walk on walls
             && p.1 >= 0 && p.0 >= 0 // don't walk beyond lower bounds
-            && p.0 <= grid.width() && p.1 <= grid.height() // dont't walk beyond upper bounds
+            && p.0 < grid.width() && p.1 < grid.height() // dont't walk beyond upper bounds
         )
         .map(|p| (p, 1))
         .collect()

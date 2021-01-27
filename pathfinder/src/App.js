@@ -5,14 +5,9 @@ import Menubar from "./components/Menubar";
 
 const zip = (a, b) => a.map((k, i) => [k, b[i]]);
 
-function useForceUpdate() {
-  const [value, setValue] = useState(0); // integer state
-  return () => setValue((value) => value + 1); // update the state to force render
-}
-
 const Loaded = ({ wasm }) => {
-  const width = 25;
-  const height = 25;
+  const width = 55;
+  const height = 22;
 
   const blocks = [];
   for (let j = 0; j < width * height; j++) {
@@ -28,21 +23,21 @@ const Loaded = ({ wasm }) => {
       for (let y = 0; y < width; y++) {
         if (y === 0 && x === 0) {
           const node = {
-            x: x,
-            y: y,
+            x: y,
+            y: x,
             isStart: true,
             isFinish: false,
-            isWall: walls[width * x + y],
+            isWall: walls[width * y + x],
             isVisited: false,
           };
           currentRow.push(node);
         } else {
           const node = {
-            x: x,
-            y: y,
+            x: y,
+            y: x,
             isStart: false,
             isFinish: false,
-            isWall: walls[width * x + y],
+            isWall: walls[width * y + x],
             isVisited: false,
           };
           currentRow.push(node);
@@ -53,8 +48,6 @@ const Loaded = ({ wasm }) => {
     return nodes;
   };
 
-  const forceUpdate = useForceUpdate();
-
   const eraseGoalsCallback = () => {
     try {
       const finish = document.getElementsByClassName(`node is-finish`);
@@ -63,12 +56,10 @@ const Loaded = ({ wasm }) => {
       }
     } catch {}
   };
-  const board = build_universe(width, height, eraseGoalsCallback);
-  // const v = wasm.run_astar_cityblock(width, height, walls, 0, 0, GOALX, GOALY);
+  const board = build_universe(width, height);
   // eslint-disable-next-line no-unused-vars
   const [universe, _setUniverse] = useState(board);
   // eslint-disable-next-line no-unused-vars
-  // const [_path, _setPath] = useState(v);
   const [isPathThere, setIsPathThere] = useState(true);
 
   const fetchWallsCity = () => {
@@ -77,15 +68,11 @@ const Loaded = ({ wasm }) => {
     const a = document.getElementsByClassName(`node is-really-wall`);
     for (let k = 0; k < a.length; k++) {
       const el = a[k].id.split("-");
-      // console.log(`ez most wall lett x: ${el[1]} y: ${el[2]}`);
-      block[parseInt(el[1]) * width + parseInt(el[2])] = 1;
+      block[parseInt(el[1]) * height + parseInt(el[2])] = 1;
     }
     const goal = getGoal();
     if (goal === undefined) {
-      // console.log("no");
       return;
-    } else {
-      // console.log("goal set to", goal.x, goal.y);
     }
     const z = wasm.run_astar_cityblock(
       width,
@@ -96,13 +83,11 @@ const Loaded = ({ wasm }) => {
       goal.x,
       goal.y
     );
-
     animateShortestPath(buildPath(z));
   };
 
   const clearWalls = () => {
     const lastpath = document.getElementsByClassName(`node`);
-    // console.log("a hossza most", lastpath);
     for (let j = 0; j < lastpath.length; j++) {
       const node = lastpath[j];
       if (node.classList.contains("is-really-wall")) {
@@ -112,12 +97,7 @@ const Loaded = ({ wasm }) => {
   };
 
   const rebuild_universe = (withWalls = false) => {
-    // const block = new Array(width * height);
-    // block.fill(0);
-    // const u = build_universe(width, height, block);
-
     const lastpath = document.getElementsByClassName(`node`);
-    // console.log("a hossza most", lastpath);
     for (let j = 0; j < lastpath.length; j++) {
       const cond = withWalls
         ? false
@@ -140,17 +120,13 @@ const Loaded = ({ wasm }) => {
     const a = document.getElementsByClassName("node is-really-wall");
     for (let k = 0; k < a.length; k++) {
       const el = a[k].id.split("-");
-      // console.log(`ez most wall lett x: ${el[1]} y: ${el[2]}`);
-      block[parseInt(el[1]) * width + parseInt(el[2])] = 1;
+      block[parseInt(el[1]) * height + parseInt(el[2])] = 1;
     }
     const goal = getGoal();
     if (goal === undefined) {
       return;
-    } else {
-      // console.log("goal set to", goal.x, goal.y);
     }
     const z = wasm.run_astar_king(width, height, block, 0, 0, goal.x, goal.y);
-
     animateShortestPath(buildPath(z));
   };
 
@@ -163,17 +139,6 @@ const Loaded = ({ wasm }) => {
       return;
     }
   };
-
-  // const clearInitialGoal = () => {
-  //   try {
-  //     const finish = document.getElementsByClassName(`node is-finish`);
-  //     for (let i = 0; i < finish.length - 1; i++) {
-  //       finish[i].className = "node";
-  //     }
-  //   } catch {
-  //     console.log("skipped");
-  //   }
-  // };
 
   const buildPath = (p) => {
     const x_path = [];
@@ -194,19 +159,11 @@ const Loaded = ({ wasm }) => {
   const animateShortestPath = (existing) => {
     if (existing.length === 0) {
       const el = document.getElementById("pathbutton");
-      // console.log(el);
       el.innerHTML = "No path";
       el.classList.add("btn-inactive");
       setIsPathThere(false);
     }
 
-    // cleanup last
-    // const lastpath = document.getElementsByClassName("node is-visited");
-    // console.log("ezek", lastpath);
-    // for (let j = 0; j < lastpath.length; j++) {
-    //   console.log("ezt megváltoztotta", lastpath[j]);
-    //   lastpath[j].className = "node";
-    // }
     rebuild_universe();
 
     for (let i = 0; i < existing.length; i++) {
@@ -260,6 +217,32 @@ const Loaded = ({ wasm }) => {
             </div>
           );
         })}
+      </div>
+      <div id="wrapper">
+        <p id="article">
+          <div id="floating" className="legend-no is-legend-s">
+            &nbsp;
+          </div>
+          Start Node
+        </p>
+        <p id="article">
+          <div id="floating" className="legend-no is-legend-f">
+            &nbsp;
+          </div>
+          Finish Node
+        </p>
+        <p id="article">
+          <div id="floating" className="legend-no is-legend-w">
+            &nbsp;
+          </div>
+          Wall
+        </p>
+        <p id="article">
+          <div id="floating" className="legend-no is-legend-v">
+            &nbsp;
+          </div>
+          Shortest path
+        </p>
       </div>
     </div>
   );
