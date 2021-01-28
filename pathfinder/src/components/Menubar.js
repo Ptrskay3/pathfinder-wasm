@@ -87,19 +87,19 @@ export default function Menubar({
           >
             {king ? "Diagonal allowed" : "Diagonal disabled"}
           </button>
-          <button className="btn-active" id="clearer2" onClick={randomWalls}>
+          <button className="btn-active" id="clearer" onClick={randomWalls}>
             Random Maze
           </button>
-          <button className="btn-active" id="clearer" onClick={clearUni}>
+          <button className="btn-active" id="clearer2" onClick={clearUni}>
             Clear All
           </button>
-          <button className="btn-active" id="clearer2" onClick={clearWalls}>
+          <button className="btn-active" id="clearer3" onClick={clearWalls}>
             Clear Walls
           </button>
-          <button className="btn-active" id="clearer2" onClick={clearShortest}>
+          <button className="btn-active" id="clearer4" onClick={clearShortest}>
             Clear Path
           </button>
-          <button className="btn-active" id="clearer2" onClick={toggleModal}>
+          <button className="btn-active" id="clearer5" onClick={toggleModal}>
             Help
           </button>
         </nav>

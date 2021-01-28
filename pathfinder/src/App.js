@@ -95,7 +95,6 @@ const Loaded = ({ wasm }) => {
     if (goal === undefined) {
       return;
     }
-    console.log(block);
     const z = wasm.run_astar_cityblock(
       width,
       height,
