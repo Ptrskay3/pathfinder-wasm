@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import "./App.css";
 import Node from "./components/Node";
 import Menubar from "./components/Menubar";
+import Welcome from "./components/Welcome";
 
 const zip = (a, b) => a.map((k, i) => [k, b[i]]);
 
@@ -114,6 +115,21 @@ const Loaded = ({ wasm }) => {
     }
   };
 
+  const clearShortest = () => {
+    const lastpath = document.getElementsByClassName(`node`);
+    for (let j = 0; j < lastpath.length; j++) {
+      if (lastpath[j].classList.contains("is-really-wall")) {
+        continue;
+      } else if (lastpath[j].classList.contains("is-start")) {
+        lastpath[j].className = "node is-start";
+      } else if (lastpath[j].classList.contains("is-finish")) {
+        lastpath[j].className = "node is-finish";
+      } else {
+        lastpath[j].className = "node";
+      }
+    }
+  };
+
   const fetchWallsKing = () => {
     const block = new Array(width * height);
     block.fill(0);
@@ -194,8 +210,10 @@ const Loaded = ({ wasm }) => {
         findPath={fetchWallsCity}
         clearUni={() => rebuild_universe(true)}
         clearWalls={() => clearWalls()}
+        clearShortest={() => clearShortest()}
         isPathThere={isPathThere}
       ></Menubar>
+      {/* <Welcome /> */}
       <div id="cls" className="grid" align="center">
         {universe.map((row, rowIdx) => {
           return (

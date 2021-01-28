@@ -8,6 +8,7 @@ export default function Menubar({
   isPathThere,
   clearUni,
   clearWalls,
+  clearShortest,
 }) {
   const [isNavVisible, setNavVisibility] = useState(false);
   const [isSmallScreen, setIsSmallScreen] = useState(false);
@@ -91,6 +92,9 @@ export default function Menubar({
           </button>
           <button className="btn-active" id="clearer2" onClick={clearWalls}>
             Clear Walls
+          </button>
+          <button className="btn-active" id="clearer2" onClick={clearShortest}>
+            Clear Path
           </button>
         </nav>
       </CSSTransition>
