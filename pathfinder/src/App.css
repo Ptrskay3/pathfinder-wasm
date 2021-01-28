@@ -8,6 +8,20 @@
   display: inline-block;
 }
 
+#tutorial {
+  font-size: larger;
+  width: 65vw;
+  color: antiquewhite;
+  display: inline-block;
+}
+
+#tutorial-sidenote {
+  font-size: medium;
+  width: 65vw;
+  color: rgb(180, 179, 177);
+  display: inline-block;
+}
+
 #wrapper {
   width: 80vw;
   position: inline-block;
@@ -78,4 +92,17 @@
   align-items: center;
   text-align: center;
   min-height: 100vh;
+}
+
+.ReactModal__Overlay {
+  opacity: 0;
+  transition: opacity 500ms ease-in-out;
+}
+
+.ReactModal__Overlay--after-open {
+  opacity: 1;
+}
+
+.ReactModal__Overlay--before-close {
+  opacity: 0;
 }

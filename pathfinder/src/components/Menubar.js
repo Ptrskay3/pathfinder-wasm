@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import "./Menubar.css";
 import { CSSTransition } from "react-transition-group";
+import Welcome from "./Welcome";
 
 export default function Menubar({
   findPath,
@@ -9,11 +10,13 @@ export default function Menubar({
   clearUni,
   clearWalls,
   clearShortest,
+  toggleModal,
 }) {
   const [isNavVisible, setNavVisibility] = useState(false);
   const [isSmallScreen, setIsSmallScreen] = useState(false);
   const [isPath, setIsPath] = useState(isPathThere);
-  const [king, setKing] = useState(true);
+  const [king, setKing] = useState(false);
+  // const [modalOpen, setModalOpen] = useState(toggleModal);
 
   useEffect(() => {
     const mediaQuery = window.matchMedia("(max-width: 700px)");
@@ -39,20 +42,13 @@ export default function Menubar({
 
   const makePath = () => {
     if (!isPath) {
-      // const el = document.getElementById("pathbutton");
-      // // console.log(el);
-      // el.innerHTML = "Find Path";
-      // el.classList.add("btn-active");
       king ? findPathKing() : findPath();
-      // setIsPath(true);
     } else {
       const el = document.getElementById("pathbutton");
       el.innerHTML = "Find Path";
       el.classList.add("btn-active");
       el.classList.remove("btn-inactive");
-      // console.log("entered path");
       king ? findPathKing() : findPath();
-      // setIsPath(false);
     }
   };
 
@@ -84,7 +80,11 @@ export default function Menubar({
           >
             {isPath ? "Find Path" : "No Path"}
           </button>
-          <button className="toggle" id="diag" onClick={toggleKing}>
+          <button
+            className="btn-inactive toggle"
+            id="diag"
+            onClick={toggleKing}
+          >
             {king ? "Diagonal allowed" : "Diagonal disabled"}
           </button>
           <button className="btn-active" id="clearer" onClick={clearUni}>
@@ -95,6 +95,9 @@ export default function Menubar({
           </button>
           <button className="btn-active" id="clearer2" onClick={clearShortest}>
             Clear Path
+          </button>
+          <button className="btn-active" id="clearer2" onClick={toggleModal}>
+            Help
           </button>
         </nav>
       </CSSTransition>

@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from "react";
-import "./App.css";
 import Node from "./components/Node";
 import Menubar from "./components/Menubar";
 import Welcome from "./components/Welcome";
+import Legend from "./components/Legend";
+import "./App.css";
 
 const zip = (a, b) => a.map((k, i) => [k, b[i]]);
 
@@ -16,6 +17,7 @@ const Loaded = ({ wasm }) => {
   }
   // eslint-disable-next-line no-unused-vars
   const [walls, _setWalls] = useState(blocks);
+  const [modalActive, setModalActive] = useState(false);
 
   const build_universe = (width, height) => {
     const nodes = [];
@@ -212,8 +214,8 @@ const Loaded = ({ wasm }) => {
         clearWalls={() => clearWalls()}
         clearShortest={() => clearShortest()}
         isPathThere={isPathThere}
+        toggleModal={() => setModalActive(!modalActive)}
       ></Menubar>
-      {/* <Welcome /> */}
       <div id="cls" className="grid" align="center">
         {universe.map((row, rowIdx) => {
           return (
@@ -222,6 +224,7 @@ const Loaded = ({ wasm }) => {
                 const { x, y, isFinish, isStart, isWall, isVisited } = node;
                 return (
                   <Node
+                    key={nodeIdx * width + y}
                     x={x}
                     y={y}
                     isStart={isStart}
@@ -236,32 +239,8 @@ const Loaded = ({ wasm }) => {
           );
         })}
       </div>
-      <div id="wrapper">
-        <p id="article">
-          <div id="floating" className="legend-no is-legend-s">
-            &nbsp;
-          </div>
-          Start Node
-        </p>
-        <p id="article">
-          <div id="floating" className="legend-no is-legend-f">
-            &nbsp;
-          </div>
-          Finish Node
-        </p>
-        <p id="article">
-          <div id="floating" className="legend-no is-legend-w">
-            &nbsp;
-          </div>
-          Wall
-        </p>
-        <p id="article">
-          <div id="floating" className="legend-no is-legend-v">
-            &nbsp;
-          </div>
-          Shortest path
-        </p>
-      </div>
+      <Legend />
+      {modalActive ? <Welcome modalActive={modalActive} /> : null}
     </div>
   );
 };
