@@ -65,7 +65,7 @@ class Welcome extends React.Component {
               </p>
               <p id="tutorial">
                 If there's no way to reach the finish node, the `Find Path`
-                button will turn to red and will say `No Path`.
+                button will turn to red and will say `No path`.
               </p>
               <p id="tutorial">
                 Randomize button will create a random solvable maze.

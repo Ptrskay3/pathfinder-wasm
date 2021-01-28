@@ -3,6 +3,7 @@ import Node from "./components/Node";
 import Menubar from "./components/Menubar";
 import Welcome from "./components/Welcome";
 import Legend from "./components/Legend";
+import randomMazes from "./Mazes";
 import "./App.css";
 
 const zip = (a, b) => a.map((k, i) => [k, b[i]]);
@@ -65,6 +66,23 @@ const Loaded = ({ wasm }) => {
   // eslint-disable-next-line no-unused-vars
   const [isPathThere, setIsPathThere] = useState(true);
 
+  const setWallsFromArray = (walls) => {
+    // cleanup
+    rebuild_universe(true);
+    const { blocks, startNode, finishNode } = walls();
+    for (let x = 0; x < width; x++) {
+      for (let y = 0; y < height; y++) {
+        document.getElementById(`node-${x}-${y}`).className =
+          blocks[x * height + y] === 1 ? "node is-really-wall" : "node";
+      }
+    }
+    document.getElementById(`node-${startNode[0]}-${startNode[1]}`).className =
+      "node is-start";
+    document.getElementById(
+      `node-${finishNode[0]}-${finishNode[1]}`
+    ).className = "node is-finish";
+  };
+
   const fetchWallsCity = () => {
     const block = new Array(width * height);
     block.fill(0);
@@ -77,6 +95,7 @@ const Loaded = ({ wasm }) => {
     if (goal === undefined) {
       return;
     }
+    console.log(block);
     const z = wasm.run_astar_cityblock(
       width,
       height,
@@ -215,6 +234,7 @@ const Loaded = ({ wasm }) => {
         clearShortest={() => clearShortest()}
         isPathThere={isPathThere}
         toggleModal={() => setModalActive(!modalActive)}
+        randomWalls={() => setWallsFromArray(randomMazes)}
       ></Menubar>
       <div id="cls" className="grid" align="center">
         {universe.map((row, rowIdx) => {
@@ -225,13 +245,13 @@ const Loaded = ({ wasm }) => {
                 return (
                   <Node
                     key={nodeIdx * width + y}
-                    x={x}
-                    y={y}
-                    isStart={isStart}
-                    isFinish={isFinish}
-                    isVisited={isVisited}
-                    isWall={isWall}
-                    callback={eraseGoalsCallback}
+                    x_={x}
+                    y_={y}
+                    isStart_={isStart}
+                    isFinish_={isFinish}
+                    isVisited_={isVisited}
+                    isWall_={isWall}
+                    callback_={eraseGoalsCallback}
                   />
                 );
               })}

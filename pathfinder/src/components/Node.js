@@ -1,7 +1,15 @@
 import React from "react";
+import { useState, useRef, useCallback } from "react";
 import "./Node.css";
 
-// const zip = (a, b) => a.map((k, i) => [k, b[i]]);
+const useFocus = () => {
+  const htmlElRef = useRef(null);
+  const setFocus = () => {
+    htmlElRef.current && htmlElRef.current.focus();
+  };
+
+  return [htmlElRef, setFocus];
+};
 
 const debounce = (func, wait = 500) => {
   let timeout;
@@ -13,83 +21,68 @@ const debounce = (func, wait = 500) => {
   };
 };
 
-const throttle = (fn, delay) => {
-  let lastCalled = 0;
-  return (...args) => {
-    let now = new Date().getTime();
-    if (now - lastCalled < delay) {
-      return;
-    }
-    lastCalled = now;
-    return fn(...args);
+export default function Node({
+  x_,
+  y_,
+  isStart_,
+  isFinish_,
+  isVisited_,
+  isWall_,
+  callback_,
+}) {
+  const [x, setX] = useState(x_);
+  const [y, setY] = useState(y_);
+  const [isStart, setIsStart] = useState(isStart_);
+  const [isFinish, setIsFinish] = useState(isFinish_);
+  const [isVisited, setIsVisited] = useState(isVisited_);
+  const [isWall, setIsWall] = useState(isWall_);
+
+  const [nodeRef, setNodeFocus] = useFocus();
+
+  const onMouseDown = () => {
+    callback_();
+    setIsFinish(true);
+    setIsWall(false);
+    setIsVisited(false);
   };
-};
 
-export default class Node extends React.Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      x: this.props.x,
-      y: this.props.y,
-      isStart: this.props.isStart,
-      isFinish: this.props.isFinish,
-      isVisited: this.props.isVisited,
-      isWall: this.props.isWall,
-      dragging: false,
-      callback: this.props.callback,
-    };
-    this.onMouseDown = this.onMouseDown.bind(this);
-    this.onMouseEnter = this.onMouseEnter.bind(this);
-    // this.onMouseUp = this.onMouseUp.bind(this);
-    this.onKeyPressed = this.onKeyPressed.bind(this);
-    // this.onKeyUp = this.onKeyUp.bind(this);
-    this.onMouseLeave = this.onMouseLeave.bind(this);
-  }
+  const _onKeyPressed = () => {
+    if (isStart) return;
 
-  onMouseEnter() {
-    this.node.focus();
-  }
+    setIsWall(!isWall);
+    setIsFinish(false);
+  };
 
-  onMouseDown(event) {
-    this.state.callback();
-    this.setState({ isFinish: true, isWall: false, isVisited: false });
-  }
+  // TODO: implement throttle
+  const handler = useCallback(debounce(_onKeyPressed, 5), [
+    isWall,
+    isFinish,
+    isStart,
+  ]);
 
-  onMouseLeave() {
-    this.setState({ isFinish: false });
-  }
+  const onKeyPressed = () => {
+    handler();
+  };
 
-  onKeyPressed(e) {
-    if (this.state.isStart) return;
-    this.setState({
-      isWall: !this.state.isWall,
-      isFinish: false,
-    });
-  }
+  const extraClassName = isStart
+    ? "is-start"
+    : isFinish
+    ? "is-finish"
+    : isVisited
+    ? "is-visited"
+    : isWall
+    ? "is-really-wall"
+    : "";
 
-  render() {
-    const extraClassName = this.state.isStart
-      ? "is-start"
-      : this.state.isFinish
-      ? "is-finish"
-      : this.state.isVisited
-      ? "is-visited"
-      : this.state.isWall
-      ? "is-really-wall"
-      : "";
-    return (
-      <div
-        ref={(inputEl) => (this.node = inputEl)}
-        tabIndex="0"
-        onClick={this.nodeClicked}
-        onMouseDown={this.onMouseDown}
-        onMouseEnter={this.onMouseEnter}
-        onKeyDown={() => {
-          throttle(this.onKeyPressed, 200)();
-        }}
-        className={`node ${extraClassName}`}
-        id={`node-${this.state.x}-${this.state.y}`}
-      />
-    );
-  }
+  return (
+    <div
+      ref={nodeRef}
+      tabIndex="0"
+      onMouseDown={onMouseDown}
+      onMouseEnter={setNodeFocus}
+      onKeyDown={onKeyPressed}
+      className={`node ${extraClassName}`}
+      id={`node-${x}-${y}`}
+    />
+  );
 }

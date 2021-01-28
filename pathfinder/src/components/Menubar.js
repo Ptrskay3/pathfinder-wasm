@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from "react";
 import "./Menubar.css";
 import { CSSTransition } from "react-transition-group";
-import Welcome from "./Welcome";
 
 export default function Menubar({
   findPath,
@@ -11,6 +10,7 @@ export default function Menubar({
   clearWalls,
   clearShortest,
   toggleModal,
+  randomWalls,
 }) {
   const [isNavVisible, setNavVisibility] = useState(false);
   const [isSmallScreen, setIsSmallScreen] = useState(false);
@@ -86,6 +86,9 @@ export default function Menubar({
             onClick={toggleKing}
           >
             {king ? "Diagonal allowed" : "Diagonal disabled"}
+          </button>
+          <button className="btn-active" id="clearer2" onClick={randomWalls}>
+            Random Maze
           </button>
           <button className="btn-active" id="clearer" onClick={clearUni}>
             Clear All
