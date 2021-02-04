@@ -24,6 +24,9 @@ cd ../pathfinder && npm install && npm link pathfinder-wasm
 
 After that the application is ready to be started with `npm start`.
 
+There is a lot of room for simplification and refactoring, and also the React state variables
+should be better arranged.
+
 #### TODO
 
 - Add more mazes
