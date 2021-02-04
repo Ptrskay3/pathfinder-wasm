@@ -8,6 +8,10 @@ import "./App.css";
 
 const zip = (a, b) => a.map((k, i) => [k, b[i]]);
 
+const Unloaded = ({ loading }) => {
+  return loading ? <div>Laying down cells..</div> : <div />;
+};
+
 const Loaded = ({ wasm }) => {
   const width = 55;
   const height = 22;
@@ -262,10 +266,6 @@ const Loaded = ({ wasm }) => {
       {modalActive ? <Welcome modalActive={modalActive} /> : null}
     </div>
   );
-};
-
-const Unloaded = ({ loading }) => {
-  return loading ? <div>Laying down bricks...</div> : <div />;
 };
 
 const App = () => {

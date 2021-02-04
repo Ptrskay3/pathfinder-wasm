@@ -1,5 +1,6 @@
 import React from "react";
-import { useState, useRef, useCallback } from "react";
+import { useState, useRef } from "react";
+import { debounce } from "lodash";
 import "./Node.css";
 
 const useFocus = () => {
@@ -9,16 +10,6 @@ const useFocus = () => {
   };
 
   return [htmlElRef, setFocus];
-};
-
-const debounce = (func, wait = 500) => {
-  let timeout;
-  return function (...args) {
-    clearTimeout(timeout);
-    timeout = setTimeout(() => {
-      func.apply(this, args);
-    }, wait);
-  };
 };
 
 export default function Node({
@@ -46,22 +37,10 @@ export default function Node({
     setIsVisited(false);
   };
 
-  const _onKeyPressed = () => {
+  const onKeyPressed = () => {
     if (isStart) return;
-
     setIsWall(!isWall);
     setIsFinish(false);
-  };
-
-  // TODO: implement throttle
-  const handler = useCallback(debounce(_onKeyPressed, 5), [
-    isWall,
-    isFinish,
-    isStart,
-  ]);
-
-  const onKeyPressed = () => {
-    handler();
   };
 
   const extraClassName = isStart
@@ -80,7 +59,15 @@ export default function Node({
       tabIndex="0"
       onMouseDown={onMouseDown}
       onMouseEnter={setNodeFocus}
-      onKeyDown={onKeyPressed}
+      onKeyDown={debounce(
+        (event) => {
+          if (event.key === "w") {
+            onKeyPressed();
+          }
+        },
+        10,
+        { trailing: true, leading: false }
+      )}
       className={`node ${extraClassName}`}
       id={`node-${x}-${y}`}
     />
