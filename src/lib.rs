@@ -2,11 +2,11 @@
 
 mod utils;
 
-use wasm_bindgen::prelude::*;
-use pathfinding::prelude::{absdiff, astar, dijkstra, bfs};
+use js_sys;
+use pathfinding::prelude::{absdiff, astar, bfs, dijkstra};
 use std::fmt;
 use std::num::*;
-use js_sys;
+use wasm_bindgen::prelude::*;
 
 #[cfg(feature = "wee_alloc")]
 #[global_allocator]
@@ -52,7 +52,18 @@ struct King(i32, i32);
 #[wasm_bindgen]
 impl King {
     fn distance(&self, other: &King) -> u32 {
-        (absdiff(self.0, other.0) + absdiff(self.1, other.1)) as u32
+        // Ord is not implemented for float types, so we must copy its
+        // behaviour with u32 types, so we match on the distance of the node.
+        // Zero is unchanged, diagonals are considered as distance 14, and
+        // non-diagonal neighbors are considered as distance 10.
+        // (Because what we really want is the relation of 1 and sqrt(2)..)
+        // This approximation is enough to get the smooth feel in the frontend.
+
+        match absdiff(self.0, other.0) + absdiff(self.1, other.1) {
+            dist if dist == 0 => 0,
+            dist if dist == 1 => 10,
+            _ => 14,
+        }
     }
 
     fn successors(&self, grid: Grid) -> Vec<(King, u32)> {
@@ -68,14 +79,13 @@ impl King {
             King(x - 1, y - 1),
         ]
         .into_iter()
-        .filter(|p| 
+        .filter(|p| {
             !grid.is_wall_there(p.0, p.1) // don't walk on walls
             && p.1 >= 0 && p.0 >= 0  // don't walk beyond lower bounds
             && p.0 < grid.width() && p.1 < grid.height() // don't walk beyond upper bounds
-        )
-        .map(|p| (p.clone(), p.distance(&self)))
+        })
+        .map(|p| (p.clone(), p.distance(&self))) // set the "real" euclidean distance
         .collect()
-
     }
 }
 
@@ -104,14 +114,13 @@ impl CityBlock {
             CityBlock(x - 1, y),
         ]
         .into_iter()
-        .filter(|p| 
+        .filter(|p| {
             !grid.is_wall_there(p.0, p.1) // don't walk on walls
             && p.1 >= 0 && p.0 >= 0 // don't walk beyond lower bounds
             && p.0 < grid.width() && p.1 < grid.height() // dont't walk beyond upper bounds
-        )
-        .map(|p| (p, 1))
+        })
+        .map(|p| (p, 1)) // all neighbors have uniform weight
         .collect()
-        // println!("", v);
     }
 }
 
@@ -125,6 +134,7 @@ pub fn run_astar_king(
     goal_x: i32,
     goal_y: i32,
 ) -> Vec<i32> {
+    utils::set_panic_hook();
     let START: King = King(start_x, start_y);
     let GOAL: King = King(goal_x, goal_y);
     let z: Vec<bool> = is_wall.into_iter().map(|a| a != 0).collect();
@@ -135,16 +145,14 @@ pub fn run_astar_king(
         |p| *p == GOAL,
     );
 
-    // log!("result is {:?}", result);
     match result {
-        Some(r) => {
-            (r.0).iter()
-        .fold(Vec::with_capacity(r.0.len() * 2), |mut acc, p| {
-            acc.push(p.0);
-            acc.push(p.1);
-            acc
-        })
-        },
+        Some(r) => (r.0)
+            .iter()
+            .fold(Vec::with_capacity(r.0.len() * 2), |mut acc, p| {
+                acc.push(p.0);
+                acc.push(p.1);
+                acc
+            }),
         None => Vec::<i32>::new(),
     }
 }
@@ -188,16 +196,14 @@ pub fn run_astar_cityblock(
         |p| p.distance(&GOAL) / 3,
         |p| *p == GOAL,
     );
-    // log!("result is {:?}", result);
     match result {
-        Some(r) => {
-            (r.0).iter()
-        .fold(Vec::with_capacity(r.0.len() * 2), |mut acc, p| {
-            acc.push(p.0);
-            acc.push(p.1);
-            acc
-        })
-        },
-        None => vec![],
+        Some(r) => (r.0)
+            .iter()
+            .fold(Vec::with_capacity(r.0.len() * 2), |mut acc, p| {
+                acc.push(p.0);
+                acc.push(p.1);
+                acc
+            }),
+        None => Vec::<i32>::new(),
     }
 }
