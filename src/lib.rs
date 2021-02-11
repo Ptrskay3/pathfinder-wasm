@@ -73,7 +73,7 @@ impl King {
             && p.1 >= 0 && p.0 >= 0  // don't walk beyond lower bounds
             && p.0 < grid.width() && p.1 < grid.height() // don't walk beyond upper bounds
         )
-        .map(|p| (p, 1))
+        .map(|p| (p.clone(), p.distance(&self)))
         .collect()
 
     }
@@ -178,9 +178,9 @@ pub fn run_astar_cityblock(
     goal_x: i32,
     goal_y: i32,
 ) -> Vec<i32> {
+    utils::set_panic_hook();
     let START: CityBlock = CityBlock(start_x, start_y);
     let GOAL: CityBlock = CityBlock(goal_x, goal_y);
-    // let grid = Grid::new();
     let z: Vec<bool> = is_wall.into_iter().map(|a| a != 0).collect();
     let result = astar(
         &START,
