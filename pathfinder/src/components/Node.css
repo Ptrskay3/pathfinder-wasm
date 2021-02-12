@@ -1,13 +1,8 @@
 .node {
   width: 1.5vw;
   height: 3vh;
-  /* height: calc(3vh + 2px);
-  width: calc(3vh + 2px); */
-  /* min-width: 25px;
-  min-height: 25px; */
   outline: 1px solid grey;
   display: inline-block;
-  /* position: sticky; */
   overflow: hidden;
   position: relative;
 }
@@ -15,60 +10,32 @@
 .legend-no {
   width: 1.5vw;
   height: 3vh;
-  /* height: calc(3vh + 2px);
-  width: calc(3vh + 2px); */
-  /* min-width: 25px;
-  min-height: 25px; */
   outline: 1px solid grey;
   display: inline-block;
-  /* position: sticky; */
   overflow: hidden;
   position: relative;
 }
 
 .node.is-finish {
-  /* width: 25px;
-    height: 25px;
-    outline: 3px solid red;
-    display: inline-block; */
-  /* background-color: white; */
   outline: 3px rgb(46, 67, 255);
   outline-style: solid;
 }
 
 .legend-no.is-legend-f {
-  /* width: 25px;
-    height: 25px;
-    outline: 3px solid red;
-    display: inline-block; */
-  /* background-color: white; */
   outline: 3px rgb(46, 67, 255);
   outline-style: solid;
 }
 
 .is-start {
-  /* width: 25px;
-  height: 25px;
-  outline: 3px solid blue;
-  display: inline-block;
-  background-color: black; */
   outline: 3px rgb(255, 0, 136);
   outline-style: solid;
 }
 
 .legend-no.is-legend-s {
-  /* width: 25px;
-  height: 25px;
-  outline: 3px solid blue;
-  display: inline-block;
-  background-color: black; */
   outline: 3px rgb(255, 0, 136);
   outline-style: solid;
 }
 
-/* .is-visited {
-  background-color: red;
-} */
 
 .is-really-wall {
   background-color: black;

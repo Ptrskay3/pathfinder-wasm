@@ -1,17 +1,43 @@
-import React, { useState } from "react";
+import React, { useEffect, useRef } from "react";
 import ReactModal from "react-modal";
 import Legend from "./Legend";
 
-export default function Welcome({ modalActive }) {
-  const [showModal, setShowModal] = useState(modalActive);
+export const useClickOutside = (insideRefs, isVisible, onClose) => {
+  useEffect(() => {
+    const handleWindowClick = (event) => {
+      const someRefContainTarget = insideRefs
+        .filter((ref) => ref.current)
+        .some((ref) => ref.current.contains(event.target));
 
-  const handleOpenModal = () => {
-    setShowModal(true);
-  };
+      if (someRefContainTarget) {
+        return;
+      }
 
-  const handleCloseModal = () => {
-    setShowModal(false);
-  };
+      if (!isVisible) {
+        return;
+      }
+
+      if (onClose) {
+        onClose();
+      }
+    };
+
+    if (isVisible) {
+      window.addEventListener("click", handleWindowClick);
+    }
+
+    return () => {
+      if (isVisible) {
+        window.removeEventListener("click", handleWindowClick);
+      }
+    };
+  }, [isVisible, onClose]);
+};
+
+export default function Welcome({ isOpen, toggle }) {
+  const ref = useRef(null);
+
+  useClickOutside(ref, false, () => toggle(false));
 
   return (
     <div>
@@ -36,11 +62,12 @@ export default function Welcome({ modalActive }) {
             padding: "20px",
           },
         }}
+        ref={ref}
         appElement={document.getElementById("root")}
-        isOpen={showModal}
+        isOpen={isOpen}
         contentLabel="Minimal Modal Example"
       >
-        <div align="center">
+        <div align="center" ref={React.createRef()}>
           <Legend />
           <div>
             <p id="tutorial">
@@ -53,7 +80,8 @@ export default function Welcome({ modalActive }) {
             <p id="tutorial">
               Diagonal adjacency can be turned on/off with the `Diagonal
               allowed/Diagonal disabled` button. When turned on, the cost of
-              moving to all 8 neighbors is equal.
+              moving to diagonals is weighted as the "natural" eucledian
+              distance.
             </p>
             <p id="tutorial">
               If there's no way to reach the finish node, the `Find Path` button
@@ -77,7 +105,7 @@ export default function Welcome({ modalActive }) {
             </p>
           </div>
 
-          <button className="btn-active" onClick={handleCloseModal}>
+          <button className="btn-active" onClick={() => toggle(false)}>
             Got it
           </button>
         </div>

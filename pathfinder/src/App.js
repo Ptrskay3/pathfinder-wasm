@@ -22,7 +22,7 @@ const Loaded = ({ wasm }) => {
   }
   // eslint-disable-next-line no-unused-vars
   const [walls, _setWalls] = useState(blocks);
-  const [modalActive, setModalActive] = useState(false);
+  const [isModalOpen, toggleModal] = useState(false);
 
   const build_universe = (width, height) => {
     const nodes = [];
@@ -236,7 +236,7 @@ const Loaded = ({ wasm }) => {
         clearWalls={() => clearWalls()}
         clearShortest={() => clearShortest()}
         isPathThere={isPathThere}
-        toggleModal={() => setModalActive(!modalActive)}
+        toggleModal={() => toggleModal(!isModalOpen)}
         randomWalls={() => setWallsFromArray(randomMazes)}
       ></Menubar>
       <div id="cls" className="grid" align="center">
@@ -263,7 +263,9 @@ const Loaded = ({ wasm }) => {
         })}
       </div>
       <Legend />
-      {modalActive ? <Welcome modalActive={modalActive} /> : null}
+      {isModalOpen ? (
+        <Welcome isOpen={isModalOpen} toggle={toggleModal} />
+      ) : null}
     </div>
   );
 };
