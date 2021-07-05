@@ -2,7 +2,6 @@
 
 mod utils;
 
-use js_sys;
 use pathfinding::prelude::{absdiff, astar, bfs, dijkstra};
 use std::fmt;
 use std::num::*;

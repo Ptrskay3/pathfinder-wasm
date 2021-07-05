@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import "./Menubar.css";
 import { CSSTransition } from "react-transition-group";
 
+
 export default function Menubar({
   findPath,
   findPathKing,

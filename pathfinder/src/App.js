@@ -88,8 +88,7 @@ const Loaded = ({ wasm }) => {
   };
 
   const fetchWallsCity = () => {
-    const block = new Array(width * height);
-    block.fill(0);
+    const block = new Array(width * height).fill(0);
     const a = document.getElementsByClassName(`node is-really-wall`);
     for (let k = 0; k < a.length; k++) {
       const el = a[k].id.split("-");
