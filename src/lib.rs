@@ -1,26 +1,32 @@
-#![allow(non_snake_case, unused_imports, unused_macros)]
-
 mod utils;
 
-use pathfinding::prelude::{absdiff, astar, bfs, dijkstra};
-use std::fmt;
-use std::num::*;
+use pathfinding::prelude::{absdiff, astar};
 use wasm_bindgen::prelude::*;
 
 #[cfg(feature = "wee_alloc")]
 #[global_allocator]
 static ALLOC: wee_alloc::WeeAlloc = wee_alloc::WeeAlloc::INIT;
 
+#[allow(unused_macros)]
 macro_rules! log {
     ( $( $t:tt )* ) => {
         web_sys::console::log_1(&format!( $( $t )* ).into());
     }
 }
 
+/// Struct representing the grid state.
+#[derive(Debug)]
+pub struct Grid {
+    /// The cells of the grid.
+    blocks: Vec<CityBlock>,
+    /// The indicator whether the corresponding cell is a wall.
+    is_wall: Vec<bool>,
+}
+
 impl Grid {
     pub fn new(width: i32, height: i32, is_wall: Vec<bool>) -> Self {
-        let mut blocks = Vec::<CityBlock>::new();
-        assert_eq!(is_wall.len(), (width * height) as usize);
+        let mut blocks = vec![];
+        debug_assert_eq!(is_wall.len(), (width * height) as usize);
         for i in 0..width {
             for j in 0..height {
                 blocks.push(CityBlock(i, j));
@@ -28,6 +34,7 @@ impl Grid {
         }
         Self { blocks, is_wall }
     }
+    /// Check if there is a wall at (x, y).
     pub fn is_wall_there(&self, x: i32, y: i32) -> bool {
         let index = self.blocks.iter().position(|p| p.0 == x && p.1 == y);
         match index {
@@ -45,6 +52,8 @@ impl Grid {
     }
 }
 
+/// Struct representing a moveable object on the grid allowing
+/// diagonal steps too.
 #[derive(Clone, Debug, Eq, Hash, Ord, PartialEq, PartialOrd)]
 struct King(i32, i32);
 
@@ -56,7 +65,7 @@ impl King {
         // Zero is unchanged, diagonals are considered as distance 14, and
         // non-diagonal neighbors are considered as distance 10.
         // (Because what we really want is the relation of 1 and sqrt(2)..)
-        // This approximation is enough to get the smooth feel in the frontend.
+        // This approximation is good enough to get the smooth feel in the frontend.
 
         match absdiff(self.0, other.0) + absdiff(self.1, other.1) {
             dist if dist == 0 => 0,
@@ -83,20 +92,16 @@ impl King {
             && p.1 >= 0 && p.0 >= 0  // don't walk beyond lower bounds
             && p.0 < grid.width() && p.1 < grid.height() // don't walk beyond upper bounds
         })
-        .map(|p| (p.clone(), p.distance(&self))) // set the "real" euclidean distance
+        .map(|p| (p.clone(), p.distance(self))) // set the "real" euclidean distance
         .collect()
     }
 }
 
+/// Struct representing a moveable object on the grid not allowing
+/// diagonal steps.
 #[wasm_bindgen]
 #[derive(Clone, Debug, Eq, Hash, Ord, PartialEq, PartialOrd)]
 pub struct CityBlock(i32, i32);
-
-#[derive(Debug)]
-pub struct Grid {
-    blocks: Vec<CityBlock>,
-    is_wall: Vec<bool>,
-}
 
 #[wasm_bindgen]
 impl CityBlock {
@@ -116,13 +121,15 @@ impl CityBlock {
         .filter(|p| {
             !grid.is_wall_there(p.0, p.1) // don't walk on walls
             && p.1 >= 0 && p.0 >= 0 // don't walk beyond lower bounds
-            && p.0 < grid.width() && p.1 < grid.height() // dont't walk beyond upper bounds
+            && p.0 < grid.width() && p.1 < grid.height() // don't walk beyond upper bounds
         })
         .map(|p| (p, 1)) // all neighbors have uniform weight
         .collect()
     }
 }
 
+/// Run the A* algorithm on the grid with diagonals allowed.
+#[allow(non_snake_case)]
 #[wasm_bindgen]
 pub fn run_astar_king(
     width: i32,
@@ -152,29 +159,12 @@ pub fn run_astar_king(
                 acc.push(p.1);
                 acc
             }),
-        None => Vec::<i32>::new(),
+        None => vec![],
     }
 }
 
-// pub fn run_astar_knight(start_x: i32, start_y: i32, goal_x: i32, goal_y: i32) -> Vec<i32> {
-//     let START: Knight = Knight(start_x, start_y);
-//     let GOAL: Knight = Knight(goal_x, goal_y);
-//     let result = astar(
-//         &START,
-//         |p| p.successors(),
-//         |p| p.distance(&GOAL) / 3,
-//         |p| *p == GOAL,
-//     );
-
-//     let r = result.expect("...").0;
-//     r.iter()
-//         .fold(Vec::with_capacity(r.len() * 2), |mut acc, p| {
-//             acc.push(p.0);
-//             acc.push(p.1);
-//             acc
-//         })
-// }
-
+/// Run the A* algorithm on the grid with diagonals disabled.
+#[allow(non_snake_case)]
 #[wasm_bindgen]
 pub fn run_astar_cityblock(
     width: i32,
@@ -203,6 +193,6 @@ pub fn run_astar_cityblock(
                 acc.push(p.1);
                 acc
             }),
-        None => Vec::<i32>::new(),
+        None => vec![],
     }
 }

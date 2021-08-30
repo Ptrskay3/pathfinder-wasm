@@ -88,7 +88,8 @@ export default function Welcome({ isOpen, toggle }) {
               will turn to red and will say `No path`.
             </p>
             <p id="tutorial">
-              Randomize button will create a random solvable maze.
+              Randomize button will create a random solvable maze (currently
+              only 2 separate mazes are available).
             </p>
             <p id="tutorial-sidenote">
               Sidenotes

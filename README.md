@@ -32,3 +32,4 @@ should be better arranged.
 - Add more mazes
 - Moveable starting node
 - Throttle wall toggle events
+- Rewrite in uniform style: currently it's half React and half VanillaJs..
