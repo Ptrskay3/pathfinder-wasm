@@ -32,7 +32,7 @@ export default function Node({
 
   const onMouseDown = () => {
     callback_();
-    setIsFinish(true);
+    setIsFinish(() => !isFinish);
     setIsWall(false);
     setIsVisited(false);
   };
