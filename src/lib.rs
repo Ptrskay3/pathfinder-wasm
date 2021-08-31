@@ -1,6 +1,7 @@
 mod utils;
 
 use pathfinding::prelude::{absdiff, astar};
+use std::fmt::Debug;
 use wasm_bindgen::prelude::*;
 
 #[cfg(feature = "wee_alloc")]
@@ -14,32 +15,44 @@ macro_rules! log {
     }
 }
 
+/// Generic trait for a 2D grid where you have distance
+/// and some logic which cells are connected.
+pub trait Searchable: 'static + Debug {
+    fn successors(&self, grid: Grid) -> Vec<(Self, u32)>
+    where
+        Self: Sized + 'static;
+
+    fn distance(&self, other: Self) -> u32
+    where
+        Self: Sized + 'static;
+}
+
 /// Struct representing the grid state.
 #[derive(Debug)]
 pub struct Grid {
     /// The cells of the grid.
-    blocks: Vec<CityBlock>,
+    blocks: Vec<Box<dyn Searchable + 'static>>,
     /// The indicator whether the corresponding cell is a wall.
     is_wall: Vec<bool>,
 }
 
 impl Grid {
     pub fn new(width: i32, height: i32, is_wall: Vec<bool>) -> Self {
-        let mut blocks = vec![];
+        let mut blocks = Vec::<Box<dyn Searchable>>::new();
         debug_assert_eq!(is_wall.len(), (width * height) as usize);
         for i in 0..width {
             for j in 0..height {
-                blocks.push(CityBlock(i, j));
+                blocks.push(Box::new(CityBlock(i, j)));
             }
         }
         Self { blocks, is_wall }
     }
     /// Check if there is a wall at (x, y).
     pub fn is_wall_there(&self, x: i32, y: i32) -> bool {
-        let index = self.blocks.iter().position(|p| p.0 == x && p.1 == y);
+        let index = (x * self.height() as i32 + y) as usize;
         match index {
-            Some(index) => self.is_wall[index],
-            _ => false,
+            i if i <= (self.height() * self.width() - 1) as usize => self.is_wall[i],
+            _ => true,
         }
     }
 
@@ -54,12 +67,11 @@ impl Grid {
 
 /// Struct representing a moveable object on the grid allowing
 /// diagonal steps too.
-#[derive(Clone, Debug, Eq, Hash, Ord, PartialEq, PartialOrd)]
-struct King(i32, i32);
+#[derive(Clone, Debug, Eq, Hash, Ord, PartialEq, PartialOrd, Copy)]
+struct King(pub i32, pub i32);
 
-#[wasm_bindgen]
-impl King {
-    fn distance(&self, other: &King) -> u32 {
+impl Searchable for King {
+    fn distance(&self, other: King) -> u32 {
         // Ord is not implemented for float types, so we must copy its
         // behaviour with u32 types, so we match on the distance of the node.
         // Zero is unchanged, diagonals are considered as distance 14, and
@@ -92,7 +104,7 @@ impl King {
             && p.1 >= 0 && p.0 >= 0  // don't walk beyond lower bounds
             && p.0 < grid.width() && p.1 < grid.height() // don't walk beyond upper bounds
         })
-        .map(|p| (p.clone(), p.distance(self))) // set the "real" euclidean distance
+        .map(|p| (p, p.distance(*self))) // set the "real" euclidean distance
         .collect()
     }
 }
@@ -100,12 +112,11 @@ impl King {
 /// Struct representing a moveable object on the grid not allowing
 /// diagonal steps.
 #[wasm_bindgen]
-#[derive(Clone, Debug, Eq, Hash, Ord, PartialEq, PartialOrd)]
-pub struct CityBlock(i32, i32);
+#[derive(Clone, Debug, Eq, Hash, Ord, PartialEq, PartialOrd, Copy)]
+pub struct CityBlock(pub i32, pub i32);
 
-#[wasm_bindgen]
-impl CityBlock {
-    fn distance(&self, other: &CityBlock) -> u32 {
+impl Searchable for CityBlock {
+    fn distance(&self, other: CityBlock) -> u32 {
         (absdiff(self.0, other.0) + absdiff(self.1, other.1)) as u32
     }
 
@@ -147,7 +158,7 @@ pub fn run_astar_king(
     let result = astar(
         &START,
         |p| p.successors(Grid::new(width, height, z.clone())),
-        |p| p.distance(&GOAL) / 3,
+        |p| p.distance(GOAL) / 3,
         |p| *p == GOAL,
     );
 
@@ -182,7 +193,7 @@ pub fn run_astar_cityblock(
     let result = astar(
         &START,
         |p| p.successors(Grid::new(width, height, z.clone())),
-        |p| p.distance(&GOAL) / 3,
+        |p| p.distance(GOAL) / 3,
         |p| *p == GOAL,
     );
     match result {
