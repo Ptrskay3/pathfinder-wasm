@@ -1,0 +1,13 @@
+.container {
+  margin: auto;
+  display: flex;
+  flex-direction: column;
+}
+
+.gridRow {
+  margin: auto;
+  display: flex;
+  flex-grow: 1;
+  height: auto;
+  flex-direction: row;
+}
