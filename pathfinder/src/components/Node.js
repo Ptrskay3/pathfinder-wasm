@@ -52,9 +52,10 @@ export default function Node({
   };
 
   const onKeyPressed = () => {
-    if (isStart) return;
-    setIsWall(!isWall);
+    setIsWall(() => !isWall);
     setIsFinish(false);
+    setIsStart(false);
+    setIsVisited(false);
   };
 
   const extraClassName = isStart
