@@ -1,5 +1,5 @@
 let CACHE_NAME = "pathfinder";
-let urlsToCache = ["/", "/index.html", "/logo192.png", "/logo512.png"];
+let urlsToCache = ["./"];
 
 // Install a service worker
 self.addEventListener("install", (event) => {
