@@ -1,5 +1,5 @@
 let CACHE_NAME = "pathfinder";
-let urlsToCache = ["/", "/completed"];
+let urlsToCache = ["/", "/index.html", "/logo192.png", "/logo512.png"];
 
 // Install a service worker
 self.addEventListener("install", (event) => {
@@ -27,7 +27,7 @@ self.addEventListener("fetch", (event) => {
 
 // Update a service worker
 self.addEventListener("activate", (event) => {
-  let cacheWhitelist = ["your-app-name"];
+  let cacheWhitelist = ["pathfinder"];
   event.waitUntil(
     caches.keys().then((cacheNames) => {
       return Promise.all(
