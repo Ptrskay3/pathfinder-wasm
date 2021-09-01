@@ -2,7 +2,6 @@ import React, { useState, useEffect } from "react";
 import "./Menubar.css";
 import { CSSTransition } from "react-transition-group";
 
-
 export default function Menubar({
   findPath,
   findPathKing,
@@ -15,7 +14,7 @@ export default function Menubar({
 }) {
   const [isNavVisible, setNavVisibility] = useState(false);
   const [isSmallScreen, setIsSmallScreen] = useState(false);
-  const [isPath, setIsPath] = useState(isPathThere);
+  const [isPath] = useState(isPathThere);
   const [king, setKing] = useState(false);
   // const [modalOpen, setModalOpen] = useState(toggleModal);
 

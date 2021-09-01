@@ -31,7 +31,7 @@ export const useClickOutside = (insideRefs, isVisible, onClose) => {
         window.removeEventListener("click", handleWindowClick);
       }
     };
-  }, [isVisible, onClose]);
+  }, [isVisible, onClose, insideRefs]);
 };
 
 export default function Welcome({ isOpen, toggle }) {
@@ -65,13 +65,14 @@ export default function Welcome({ isOpen, toggle }) {
         ref={ref}
         appElement={document.getElementById("root")}
         isOpen={isOpen}
-        contentLabel="Minimal Modal Example"
+        contentLabel="Modal"
       >
         <div align="center" ref={React.createRef()}>
           <Legend />
           <div>
             <p id="tutorial">
-              Finish Node can be set by left-clicking on a cell.
+              Finish Node can be set by left-clicking on a cell. Start Node can
+              be set by right-clicking on a cell.
             </p>
             <p id="tutorial">
               Pressing or holding W while hovering over a cell will toggle
@@ -94,10 +95,6 @@ export default function Welcome({ isOpen, toggle }) {
             <p id="tutorial-sidenote">
               Sidenotes
               <ul>
-                <li>
-                  Start Node will also be moveable in the future, once I'll
-                  figure out a nice way to interact with it.
-                </li>
                 <li>
                   For the time being the application uses A* algorithm to find
                   the shortest path.

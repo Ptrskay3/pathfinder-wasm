@@ -1,9 +1,9 @@
 .node {
-  width: 1.5vw;
+  width: 1.7vw;
   height: 3vh;
   outline: 1px solid grey;
-  display: inline-block;
   overflow: hidden;
+  display: inline-block;
   position: relative;
 }
 
@@ -35,7 +35,6 @@
   outline: 3px rgb(255, 0, 136);
   outline-style: solid;
 }
-
 
 .is-really-wall {
   background-color: black;

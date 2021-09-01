@@ -1,10 +1,11 @@
 import React, { useState, useEffect } from "react";
-import Node from "./components/Node";
+import { Grid } from "./components/Grid";
 import Menubar from "./components/Menubar";
 import Welcome from "./components/Welcome";
 import Legend from "./components/Legend";
 import randomMazes from "./Mazes";
 import "./App.css";
+import { width, height } from "./constants";
 
 const zip = (a, b) => a.map((k, i) => [k, b[i]]);
 
@@ -13,50 +14,10 @@ const Unloaded = ({ loading }) => {
 };
 
 const Loaded = ({ wasm }) => {
-  const width = 55;
-  const height = 22;
-
-  const blocks = [];
-  for (let j = 0; j < width * height; j++) {
-    blocks.push(0);
-  }
-  // eslint-disable-next-line no-unused-vars
-  const [walls, _setWalls] = useState(blocks);
   const [isModalOpen, toggleModal] = useState(false);
 
-  const build_universe = (width, height) => {
-    const nodes = [];
-    for (let x = 0; x < height; x++) {
-      const currentRow = [];
-      for (let y = 0; y < width; y++) {
-        if (y === 0 && x === 0) {
-          const node = {
-            x: y,
-            y: x,
-            isStart: true,
-            isFinish: false,
-            isWall: walls[width * y + x],
-            isVisited: false,
-          };
-          currentRow.push(node);
-        } else {
-          const node = {
-            x: y,
-            y: x,
-            isStart: false,
-            isFinish: false,
-            isWall: walls[width * y + x],
-            isVisited: false,
-          };
-          currentRow.push(node);
-        }
-      }
-      nodes.push(currentRow);
-    }
-    return nodes;
-  };
-
-  const eraseGoalsCallback = () => {
+  // TODO: Remove these horrible callbacks and Vanilla JS code, and replace with a proper React component
+  const onFinishClick = () => {
     try {
       const finish = document.getElementsByClassName(`node is-finish`);
       for (let i = 0; i < finish.length; i++) {
@@ -64,9 +25,15 @@ const Loaded = ({ wasm }) => {
       }
     } catch {}
   };
-  const board = build_universe(width, height);
-  // eslint-disable-next-line no-unused-vars
-  const [universe, _setUniverse] = useState(board);
+  const onStartClick = () => {
+    try {
+      const start = document.getElementsByClassName(`node is-start`);
+      for (let i = 0; i < start.length; i++) {
+        start[i].className = "node";
+      }
+    } catch {}
+  };
+
   // eslint-disable-next-line no-unused-vars
   const [isPathThere, setIsPathThere] = useState(true);
 
@@ -98,12 +65,17 @@ const Loaded = ({ wasm }) => {
     if (goal === undefined) {
       return;
     }
+
+    const start = getStart();
+    if (start === undefined) {
+      return;
+    }
     const z = wasm.run_astar_cityblock(
       width,
       height,
       block,
-      0,
-      0,
+      start.x,
+      start.y,
       goal.x,
       goal.y
     );
@@ -111,7 +83,7 @@ const Loaded = ({ wasm }) => {
   };
 
   const clearWalls = () => {
-    const lastpath = document.getElementsByClassName(`node`);
+    const lastpath = document.getElementsByClassName("node");
     for (let j = 0; j < lastpath.length; j++) {
       const node = lastpath[j];
       if (node.classList.contains("is-really-wall")) {
@@ -121,7 +93,7 @@ const Loaded = ({ wasm }) => {
   };
 
   const rebuild_universe = (withWalls = false) => {
-    const lastpath = document.getElementsByClassName(`node`);
+    const lastpath = document.getElementsByClassName("node");
     for (let j = 0; j < lastpath.length; j++) {
       const cond = withWalls
         ? false
@@ -154,8 +126,7 @@ const Loaded = ({ wasm }) => {
   };
 
   const fetchWallsKing = () => {
-    const block = new Array(width * height);
-    block.fill(0);
+    const block = new Array(width * height).fill(0);
     const a = document.getElementsByClassName("node is-really-wall");
     for (let k = 0; k < a.length; k++) {
       const el = a[k].id.split("-");
@@ -165,7 +136,20 @@ const Loaded = ({ wasm }) => {
     if (goal === undefined) {
       return;
     }
-    const z = wasm.run_astar_king(width, height, block, 0, 0, goal.x, goal.y);
+
+    const start = getStart();
+    if (start === undefined) {
+      return;
+    }
+    const z = wasm.run_astar_king(
+      width,
+      height,
+      block,
+      start.x,
+      start.y,
+      goal.x,
+      goal.y
+    );
     animateShortestPath(buildPath(z));
   };
 
@@ -173,6 +157,16 @@ const Loaded = ({ wasm }) => {
     try {
       const finish = document.getElementsByClassName(`node is-finish`);
       const el = finish[0].id.split("-");
+      return { x: el[1], y: el[2] };
+    } catch {
+      return;
+    }
+  };
+
+  const getStart = () => {
+    try {
+      const start = document.getElementsByClassName(`node is-start`);
+      const el = start[0].id.split("-");
       return { x: el[1], y: el[2] };
     } catch {
       return;
@@ -238,29 +232,11 @@ const Loaded = ({ wasm }) => {
         toggleModal={() => toggleModal(!isModalOpen)}
         randomWalls={() => setWallsFromArray(randomMazes)}
       ></Menubar>
-      <div id="cls" className="grid" align="center">
-        {universe.map((row, rowIdx) => {
-          return (
-            <div>
-              {row.map((node, nodeIdx) => {
-                const { x, y, isFinish, isStart, isWall, isVisited } = node;
-                return (
-                  <Node
-                    key={nodeIdx * width + y}
-                    x_={x}
-                    y_={y}
-                    isStart_={isStart}
-                    isFinish_={isFinish}
-                    isVisited_={isVisited}
-                    isWall_={isWall}
-                    callback_={eraseGoalsCallback}
-                  />
-                );
-              })}
-            </div>
-          );
-        })}
-      </div>
+      <Grid
+        wasm={wasm}
+        onFinishClick={onFinishClick}
+        onStartClick={onStartClick}
+      />
       <Legend />
       {isModalOpen ? (
         <Welcome isOpen={isModalOpen} toggle={toggleModal} />

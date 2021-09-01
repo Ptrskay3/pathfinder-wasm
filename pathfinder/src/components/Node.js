@@ -1,6 +1,6 @@
 import React from "react";
 import { useState, useRef } from "react";
-import { debounce } from "lodash";
+import _ from "lodash";
 import "./Node.css";
 
 const useFocus = () => {
@@ -19,10 +19,11 @@ export default function Node({
   isFinish_,
   isVisited_,
   isWall_,
-  callback_,
+  onFinishClick,
+  onStartClick,
 }) {
-  const [x, setX] = useState(x_);
-  const [y, setY] = useState(y_);
+  const [x] = useState(x_);
+  const [y] = useState(y_);
   const [isStart, setIsStart] = useState(isStart_);
   const [isFinish, setIsFinish] = useState(isFinish_);
   const [isVisited, setIsVisited] = useState(isVisited_);
@@ -30,9 +31,22 @@ export default function Node({
 
   const [nodeRef, setNodeFocus] = useFocus();
 
-  const onMouseDown = () => {
-    callback_();
+  const onMouseDown = (event) => {
+    event.preventDefault();
+    onFinishClick();
+    event.nativeEvent.stopImmediatePropagation();
     setIsFinish(() => !isFinish);
+    setIsWall(false);
+    setIsStart(false);
+    setIsVisited(false);
+  };
+
+  const onContextMenu = (event) => {
+    event.preventDefault();
+    onStartClick();
+    event.nativeEvent.stopImmediatePropagation();
+    setIsStart(() => !isStart);
+    setIsFinish(false);
     setIsWall(false);
     setIsVisited(false);
   };
@@ -57,16 +71,17 @@ export default function Node({
     <div
       ref={nodeRef}
       tabIndex="0"
-      onMouseDown={onMouseDown}
+      onClick={onMouseDown}
+      onContextMenu={onContextMenu}
       onMouseEnter={setNodeFocus}
-      onKeyDown={debounce(
+      onKeyDown={_.debounce(
         (event) => {
           if (event.key === "w") {
             onKeyPressed();
           }
         },
-        10,
-        { trailing: true, leading: false }
+        500,
+        { trailing: true, leading: true }
       )}
       className={`node ${extraClassName}`}
       id={`node-${x}-${y}`}
