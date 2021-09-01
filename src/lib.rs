@@ -162,6 +162,10 @@ pub fn run_astar_king(
         |p| *p == GOAL,
     );
 
+    if let Some(res) = &result {
+        log!("cost is approximately {}", res.1 / 10);
+    }
+    
     match result {
         Some(r) => (r.0)
             .iter()
@@ -196,6 +200,9 @@ pub fn run_astar_cityblock(
         |p| p.distance(GOAL) / 3,
         |p| *p == GOAL,
     );
+    if let Some(res) = &result {
+        log!("cost is {}", res.1);
+    }
     match result {
         Some(r) => (r.0)
             .iter()
