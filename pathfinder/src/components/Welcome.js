@@ -72,7 +72,7 @@ export default function Welcome({ isOpen, toggle }) {
           <div>
             <p id="tutorial">
               Finish Node can be set by left-clicking on a cell. Start Node can
-              be set by right-clicking on a cell.
+              be set by right-clicking on a cell (or touch and hold on mobile).
             </p>
             <p id="tutorial">
               Pressing or holding W while hovering over a cell will toggle
