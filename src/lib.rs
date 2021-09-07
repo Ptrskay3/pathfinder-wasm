@@ -164,7 +164,7 @@ pub fn run_astar_king(
     );
 
     if let Some(res) = &result {
-        log!("cost is approximately {}", res.1 / 10);
+        log!("cost is approximately {}", res.1 as f64 / 10.0);
     }
     
     match result {
