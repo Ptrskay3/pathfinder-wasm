@@ -1,7 +1,6 @@
 {
   "short_name": "Pathfinder",
   "name": "Pathfinder WebAssembly",
-  "author": "Peter Leeh",
   "icons": [
     {
       "src": "favicon.ico",
