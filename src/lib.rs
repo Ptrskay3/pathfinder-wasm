@@ -1,3 +1,5 @@
+#![warn(clippy::all)]
+
 mod utils;
 
 use pathfinding::prelude::{absdiff, astar};
@@ -8,7 +10,6 @@ use wasm_bindgen::prelude::*;
 #[global_allocator]
 static ALLOC: wee_alloc::WeeAlloc = wee_alloc::WeeAlloc::INIT;
 
-#[allow(unused_macros)]
 macro_rules! log {
     ( $( $t:tt )* ) => {
         web_sys::console::log_1(&format!( $( $t )* ).into());
